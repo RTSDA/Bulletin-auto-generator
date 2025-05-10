@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Church Bulletin - {{ bulletin_date }}</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Page 1: Inside Left (Left) and Inside Right (Right) -->
+    <div class="page">
+        <div class="panel panel-inside-left"> <!-- Panel 2 -->
+            <h2>{{ bulletin_theme_title | default('Welcome') }}</h2>
+            
+            <!-- Sabbath School Section - Full Width -->
+            <div class="section sabbath-school">
+                <h3>Sabbath School</h3>
+                {% for item in sabbath_school_items %}
+                <div class="event-item">
+                    <div class="ss-info">
+                        <span class="event-label">{{ item.label }}:</span>
+                        <span class="event-value">{{ item.details }}</span>
+                    </div>
+                    <span class="ss-time">{{ item.time }}</span>
+                </div>
+                {% else %}
+                <p>Sabbath School details not available.</p>
+                {% endfor %}
+            </div>
+
+            <!-- Divine Worship Section - Full Width Title, Internal 2-Column Content -->
+            <div class="section divine-worship">
+                <h3 class="section-title-with-time"><span>Divine Worship</span> <span class="section-time">11:00 AM</span></h3>
+                <div class="divine-worship-items-column-container"> <!-- New container for 2-column DW items -->
+                    {% for item in divine_worship_items %}
+                    <div class="event-item {{ item.type | lower | replace(' ', '-') }}">
+                        <strong class="event-label">{{ item.label }}:</strong>
+                        {% if item.title %}<p class="event-title">{{ item.title }}</p>{% endif %}
+                        {% if item.details %}<p class="event-details">{{ item.details }}</p>{% endif %}
+                        {% if item.speaker %}<p class="event-speaker"><em>{{ item.speaker }}</em></p>{% endif %}
+                    </div>
+                    {% else %}
+                    <p>Divine Worship details not available.</p> <!-- This might look odd in a column if no items -->
+                    {% endfor %}
+                </div> <!-- End divine-worship-items-column-container -->
+            </div>
+        </div>
+
+        <div class="panel panel-inside-right"> <!-- Panel 3 (Announcements) -->
+            <h2>Announcements</h2>
+            <div class="announcements-column-container"> <!-- New div for column layout -->
+                {% for event in announcements %}
+                <div class="announcement">
+                    <strong>{{ event.title }}</strong>
+                    {% if event.start_time_formatted %}
+                        <p><small>When: {{ event.start_time_formatted }}</small></p>
+                    {% endif %}
+                    <p>{{ event.description }}</p>
+                    {% if event.location %}
+                        <p><small>Where: {{ event.location }}</small></p>
+                    {% endif %}
+                </div>
+                <!-- hr.announcement-divider was removed in CSS, so no need to put it back here for now -->
+                {% else %}
+                <p>No announcements at this time.</p>
+                {% endfor %}
+            </div> <!-- End new div -->
+        </div>
+    </div>
+
+    <!-- Page 2: Back Cover (Left) and Front Cover (Right) -->
+    <div class="page">
+        <div class="panel panel-back-cover"> <!-- Panel 4 -->
+            <h2>Sermon Notes</h2>
+            <div class="notes-lines">
+                {% for i in range(15) %}<div class="writable-line"></div>{% endfor %}
+            </div>
+
+            <div class="contact-section">
+                <h3>Contact Us</h3>
+                <div class="contact-info">
+                    <p>Phone: {{ contact_info.phone | default('860-875-0450') }}</p>
+                    <p>Website: <a href="https://{{ contact_info.website | default('rockvilletollandsda.church') }}">{{ contact_info.website | default('rockvilletollandsda.church') }}</a></p>
+                    <p>YouTube: <a href="https://{{ contact_info.youtube | default('YouTube.com/@RockvilleTollandSDAChurch') }}">{{ contact_info.youtube | default('YouTube.com/@RockvilleTollandSDAChurch') }}</a></p>
+                    <p>Address: {{ contact_info.address | default('9 Hartford Tpke Tolland CT 06084') }}</p>
+                </div>
+                <h4>Sunset Times</h4>
+                <p>{{ sunset_times | default('Not available') }}</p>
+            </div>
+        </div>
+
+        <div class="panel panel-front-cover"> <!-- Panel 1 -->
+            <h1>{{ church_name | default('Rockville-Tolland Seventh-Day Adventist Church') }}</h1>
+            <p class="bulletin-date-front-cover">{{ bulletin_date }}</p>
+            {% if cover_image_path %}
+            <img src="{{ cover_image_path }}" alt="Cover Image" style="width:100%; height:auto;">
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html> 

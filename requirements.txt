@@ -1,0 +1,4 @@
+requests
+toml
+Jinja2
+WeasyPrint 
